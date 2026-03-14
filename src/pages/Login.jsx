@@ -6,13 +6,22 @@ import { Package } from 'lucide-react';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { login } = useInventory();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if(login(email, password)) {
+    setError(null);
+    setLoading(true);
+    try {
+      await login(email, password);
       navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || "Failed to login. Please check your credentials.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,6 +37,11 @@ export default function Login() {
         </div>
         
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {error && (
+            <div style={{ padding: '0.75rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '4px', fontSize: '0.875rem' }}>
+              {error}
+            </div>
+          )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Email Address</label>
             <input 
@@ -48,8 +62,8 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem' }}>
-            Sign In to Workspace
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem' }} disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In to Workspace'}
           </button>
         </form>
 

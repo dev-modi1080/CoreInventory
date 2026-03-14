@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
 const InventoryContext = createContext();
 
@@ -16,14 +17,59 @@ export const InventoryProvider = ({ children }) => {
 
   const [transactions, setTransactions] = useState([]);
 
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Auth Functions
-  const login = (email, password) => {
-    // Mock login
-    setUser({ name: 'Admin User', email, role: 'Inventory Manager' });
+  const login = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) throw error;
     return true;
   };
 
-  const logout = () => setUser(null);
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
+  const sendOtp = async (email) => {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false, // Don't allow signup via OTP if strictly manager app
+      }
+    });
+    if (error) throw error;
+    return true;
+  };
+
+  const verifyOtp = async (email, token) => {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'email',
+    });
+    if (error) throw error;
+    return true;
+  };
 
   // Inventory Functions
   const addProduct = (product) => {
@@ -63,8 +109,11 @@ export const InventoryProvider = ({ children }) => {
 
   const value = {
     user,
+    session,
     login,
     logout,
+    sendOtp,
+    verifyOtp,
     products,
     addProduct,
     transactions,
