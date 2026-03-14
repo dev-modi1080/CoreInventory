@@ -67,7 +67,13 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="flex-center mt-4" style={{ marginTop: '2rem' }}>
+        <div className="flex-center mt-4" style={{ marginTop: '2rem', flexDirection: 'column', gap: '1rem' }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 500 }}>
+              Sign Up
+            </Link>
+          </p>
           <Link to="/reset-password" style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 500 }}>
             Forgot Password?
           </Link>

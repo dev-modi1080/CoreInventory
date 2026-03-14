@@ -10,7 +10,8 @@ import {
   SlidersHorizontal,
   LogOut,
   User,
-  Settings
+  Settings as SettingsIcon,
+  History
 } from 'lucide-react';
 
 export default function Layout() {
@@ -29,6 +30,7 @@ export default function Layout() {
     { path: '/deliveries', icon: <ArrowUpFromLine size={20} />, label: 'Deliveries' },
     { path: '/transfers', icon: <ArrowRightLeft size={20} />, label: 'Transfers' },
     { path: '/adjustments', icon: <SlidersHorizontal size={20} />, label: 'Adjustments' },
+    { path: '/history', icon: <History size={20} />, label: 'Move History' },
   ];
 
   return (
@@ -86,12 +88,12 @@ export default function Layout() {
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-             <button className="btn btn-outline" style={{ justifyContent: 'flex-start', border: 'none' }}>
+             <NavLink to="/profile" className="btn btn-outline" style={({isActive}) => ({ justifyContent: 'flex-start', border: 'none', backgroundColor: isActive ? 'var(--bg-hover)' : 'transparent' })}>
                 <User size={16} /> My Profile
-             </button>
-             <button className="btn btn-outline" style={{ justifyContent: 'flex-start', border: 'none' }}>
-                <Settings size={16} /> Settings
-             </button>
+             </NavLink>
+             <NavLink to="/settings" className="btn btn-outline" style={({isActive}) => ({ justifyContent: 'flex-start', border: 'none', backgroundColor: isActive ? 'var(--bg-hover)' : 'transparent' })}>
+                <SettingsIcon size={16} /> Settings
+             </NavLink>
              <button className="btn btn-outline" onClick={handleLogout} style={{ justifyContent: 'flex-start', border: 'none', color: 'var(--danger)' }}>
                 <LogOut size={16} /> Logout
              </button>

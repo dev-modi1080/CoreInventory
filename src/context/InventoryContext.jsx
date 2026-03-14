@@ -45,6 +45,15 @@ export const InventoryProvider = ({ children }) => {
     return true;
   };
 
+  const register = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) throw error;
+    return true;
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -66,6 +75,14 @@ export const InventoryProvider = ({ children }) => {
       email,
       token,
       type: 'email',
+    });
+    if (error) throw error;
+    return true;
+  };
+
+  const updatePassword = async (newPassword) => {
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword
     });
     if (error) throw error;
     return true;
@@ -111,9 +128,11 @@ export const InventoryProvider = ({ children }) => {
     user,
     session,
     login,
+    register,
     logout,
     sendOtp,
     verifyOtp,
+    updatePassword,
     products,
     addProduct,
     transactions,
