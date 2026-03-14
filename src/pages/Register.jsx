@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -10,13 +10,42 @@ export default function Register() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { register } = useInventory();
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Validate email
+    if (!email.includes('@') || !email.includes('.')) {
+      setError("Please enter a valid email address containing '@' and '.'.");
+      return;
+    }
+
+    // Validate password
+    if (password.length < 5) {
+      setError("Password must be at least 5 characters long.");
+      return;
+    }
+    const letterCount = (password.match(/[a-zA-Z]/g) || []).length;
+    if (letterCount < 3) {
+      setError("Password must contain at least 3 alphabetic letters.");
+      return;
+    }
+    const numberCount = (password.match(/[0-9]/g) || []).length;
+    if (numberCount < 1) {
+      setError("Password must contain at least 1 number.");
+      return;
+    }
+    const specialCount = (password.match(/[^a-zA-Z0-9]/g) || []).length;
+    if (specialCount < 1) {
+      setError("Password must contain at least 1 special character.");
+      return;
+    }
 
     if (password !== passwordConfirm) {
       setError("Passwords do not match.");
@@ -46,7 +75,7 @@ export default function Register() {
             {success ? "Check your email to verify your account." : "Sign up to start managing your inventory."}
           </p>
         </div>
-        
+
         {error && (
           <div style={{ padding: '0.75rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '4px', fontSize: '0.875rem', marginBottom: '1rem' }}>
             {error}
@@ -66,8 +95,8 @@ export default function Register() {
           <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Email Address</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 required
                 placeholder="manager@company.com"
                 value={email}
@@ -76,23 +105,43 @@ export default function Register() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Password</label>
-              <input 
-                type="password"
-                required
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ width: '100%', paddingRight: '2.5rem' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Confirm Password</label>
-              <input 
-                type="password"
-                required
-                placeholder="••••••••"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  placeholder="••••••••"
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  style={{ width: '100%', paddingRight: '2.5rem' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
             <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem' }} disabled={loading}>
               {loading ? 'Creating Account...' : 'Sign Up'}
