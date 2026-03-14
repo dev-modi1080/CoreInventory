@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Dashboard</title>
+</head>
+
+<body>
+
+<h1>CoreInventory Dashboard</h1>
+
+<p>Welcome to Inventory System</p>
+
+<button onclick="logoutUser()">Logout</button>
+
+<script type="module">
+
+import { logout } from "../src/auth.js"
+
+window.logoutUser = () => {
+
+logout()
+
+}
+
+</script>
+
+</body>
+</html>

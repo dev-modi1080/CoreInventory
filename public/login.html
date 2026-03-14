@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Login</title>
+</head>
+
+<body>
+
+<h2>Inventory Login</h2>
+
+<input id="email" placeholder="Email"><br><br>
+
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<button onclick="loginUser()">Login</button>
+
+<br><br>
+
+<a href="forgot.html">Forgot Password?</a>
+
+<script type="module">
+
+import { login } from "../src/auth.js"
+
+window.loginUser = () => {
+
+const email = document.getElementById("email").value
+const password = document.getElementById("password").value
+
+login(email,password)
+
+}
+
+</script>
+
+</body>
+</html>

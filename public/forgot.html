@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Forgot Password</title>
+</head>
+
+<body>
+
+<h2>Reset Password</h2>
+
+<input id="email" placeholder="Enter your email">
+
+<br><br>
+
+<button onclick="reset()">Send Reset Email</button>
+
+<script type="module">
+
+import { forgotPassword } from "../src/auth.js"
+
+window.reset = () => {
+
+const email = document.getElementById("email").value
+
+forgotPassword(email)
+
+}
+
+</script>
+
+</body>
+</html>
